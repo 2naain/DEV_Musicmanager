@@ -1,19 +1,45 @@
 from sqlalchemy.exc import NoResultFound
-from sqlmodel import Session
+from sqlmodel import Session, select
 
-from models.artist import ArtistBase, ArtistID
+from models.song import SongBase, SongID, SongUpdate
 
 
-def createArtist(artist: ArtistBase, session: Session):
-    new_artist = ArtistID.model_validate(artist)
-    session.add(new_artist)
+async def createSong_db(song: SongBase, session: Session):
+    new_song = SongID.model_validate(song)
+    session.add(new_song)
     session.commit()
-    session.refresh(new_artist)
-    return new_artist
+    session.refresh(new_song)
+    return new_song
 
 
-def findArtist(id: int, session: Session):
+async def show_all_songs_db(session: Session):
+    return session.exec(select(SongID)).all()
+
+
+async def find_one_song_db(id: int, session: Session):
     try:
-        return session.get_one(ArtistID, id)
+        return session.get_one(SongID, id)
+    except NoResultFound:
+        return None
+
+
+def update_one_song_db(id: int, new_song: SongUpdate, session: Session):
+    song = find_one_song_db(id, session)
+    if song is None:
+        return None
+    song_update = new_song.model_dump(exclude_unset=True)
+    song.sqlmodel_update(song_update)
+    session.add(song)
+    session.commit()
+    session.refresh(song)
+    return song
+
+
+def kill_one_song_db(id: int, session: Session):
+    try:
+        song = session.get_one(SongID, id)
+        session.delete(song)
+        session.commit()
+        return song
     except NoResultFound:
         return None
