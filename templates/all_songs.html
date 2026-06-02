@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for song in song_list %}
+    {% include 'song_card.html' %}
+    {% endfor %}
+{% endblock %}

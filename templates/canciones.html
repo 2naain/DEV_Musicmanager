@@ -1,0 +1,9 @@
+{% include 'header.html' %}
+
+<ul>
+    {% for song in canciones %}
+    <li> {{ song.title }} </li>
+    {% endfor %}
+</ul>
+
+{% include 'footer.html' %}
