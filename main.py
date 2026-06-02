@@ -56,7 +56,7 @@ async def show_one_song(id: int, session: SessionDep):
 
 @app.patch("/song/{id}", response_model=SongID, response_model_exclude={"title", "genre"})
 async def update_song(id: int, song: SongUpdate, session: SessionDep):
-    update = update_one_song_db(id, song, session)
+    update = await update_one_song_db(id, song, session)
     if not update:
         raise HTTPException(status_code=404, detail=f"{id} Song not found")
     return update

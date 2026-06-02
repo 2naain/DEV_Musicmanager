@@ -4,7 +4,7 @@ class SongGenre(str, Enum):
     POP = "pop"
     ROCK = "rock"
     JAZZ = "jazz"
-    HIP_HOP = "hip_hop"
+    HIP_HOP = "hiphop"
     ELECTRONICA = "electronica"
     CLASICA = "clasica"
     REGGAETON = "reggaeton"

@@ -8,6 +8,7 @@ class SongBase(SQLModel):
     duration: int | None = Field(default=None, gt=0, le=1000)
     artist_id: int | None = Field(default=None, gt=0)
     in_playlist: bool = Field(default=False)
+    image_url: str | None = Field(default=None, max_length=500)
 
 
 class SongID(SongBase, table=True):
