@@ -8,7 +8,7 @@ async def createSong_db(song: SongBase, session: Session):
     new_song = SongID.model_validate(song)
     session.add(new_song)
     session.commit()
-    await session.refresh(new_song)
+    session.refresh(new_song)
     return new_song
 
 
