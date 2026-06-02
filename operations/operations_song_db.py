@@ -13,7 +13,7 @@ async def createSong_db(song: SongBase, session: Session):
 
 
 async def show_all_songs_db(session: Session):
-    return session.exec(select(SongID))
+    return session.exec(select(SongID)).all()
 
 
 async def find_one_song_db(id: int, session: Session):
