@@ -9,4 +9,4 @@ class SongGenre(str, Enum):
     CLASICA = "clasica"
     REGGAETON = "reggaeton"
     METAL = "metal"
-    whats next is to make my page work cause is shit dam shi got mixed
+    #
