@@ -10,13 +10,11 @@ async def createSong_db(song: SongBase, session: Session):
     session.refresh(new_song)
     return new_song
 
-
 async def show_all_songs_db(session: Session, q: str = None):
     query = select(SongID).where(SongID.is_active == True)
     if q:
         query = query.where(SongID.title.ilike(f"%{q}%"))
     return session.exec(query).all()
-
 
 async def find_one_song_db(id: int, session: Session):
     try:
