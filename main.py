@@ -405,3 +405,28 @@ def show_one_playlist_html(request: Request, id: int, session: SessionDep):
         "playlist": playlist,
         "songs": songs
     })
+
+@app.get("/playlists/{id}", response_class=HTMLResponse, tags=["Frontend"])
+async def show_one_playlist_html(request: Request, id: int, session: SessionDep):
+    playlist = get_one_playlist(id, session)
+    if not playlist:
+        raise HTTPException(status_code=404, detail="Playlist not found")
+    songs = get_songs_of_playlist(id, session)
+    all_songs = await show_all_songs_db(session)
+    return templates.TemplateResponse(request, "one_playlist.html", {
+        "playlist": playlist,
+        "songs": songs,
+        "all_songs": all_songs
+    })
+
+
+@app.post("/playlists/{id}/add", tags=["Frontend"])
+def add_song_html(id: int, song_id: int = Form(...), session: Session = Depends(get_session)):
+    add_song_to_playlist(id, song_id, session)
+    return RedirectResponse(f"/playlists/{id}", status_code=302)
+
+
+@app.post("/playlists/{id}/remove/{song_id}", tags=["Frontend"])
+def remove_song_html(id: int, song_id: int, session: SessionDep):
+    remove_song_from_playlist(id, song_id, session)
+    return RedirectResponse(f"/playlists/{id}", status_code=302)
