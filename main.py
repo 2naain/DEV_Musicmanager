@@ -1,3 +1,10 @@
+from models.playlist import PlaylistBase, PlaylistID
+from models.playlist_song import PlaylistSong
+from operations.operations_playlist_db import (
+    create_playlist, get_all_playlists, get_one_playlist,
+    update_playlist, delete_playlist, add_song_to_playlist,
+    remove_song_from_playlist, get_songs_of_playlist
+)
 from fastapi import FastAPI, HTTPException, UploadFile, File, Request, Form, Depends
 from typing import Optional
 from sqlmodel import Session
@@ -14,6 +21,7 @@ from operations.operations_song_db import (createSong_db,
                                            kill_one_song_db)
 from operations.operations_artist_db import createArtist, findArtist, findAllArtists, updateArtist, deleteArtist
 from utils import save_img_local, save_img_remote
+
 
 app = FastAPI(lifespan=create_all_tables)
 
@@ -62,7 +70,7 @@ async def create_song(
         artist_id=artist_id,
         image_url=image_url
     )
-    return await createSong_db(new_song, session)   
+    return await createSong_db(new_song, session)
 
 
 @app.get("/song", response_model=list[SongID], tags=["Songs"])
@@ -205,3 +213,64 @@ async def song_added(
         "/songs",
         status_code=302
     )
+
+@app.post("/playlist", response_model=PlaylistID, tags=["Playlists"])
+def create_playlist_endpoint(playlist: PlaylistBase, session: SessionDep):
+    return create_playlist(playlist, session)
+
+
+@app.get("/playlist", response_model=list[PlaylistID], tags=["Playlists"])
+def get_playlists(session: SessionDep):
+    return get_all_playlists(session)
+
+
+@app.get("/playlist/{id}", response_model=PlaylistID, tags=["Playlists"])
+def get_playlist(id: int, session: SessionDep):
+    playlist = get_one_playlist(id, session)
+    if not playlist:
+        raise HTTPException(status_code=404, detail="Playlist not found")
+    return playlist
+
+
+@app.patch("/playlist/{id}", response_model=PlaylistID, tags=["Playlists"])
+def update_playlist_endpoint(id: int, playlist: PlaylistBase, session: SessionDep):
+    updated = update_playlist(id, playlist, session)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Playlist not found")
+    return updated
+
+
+@app.delete("/playlist/{id}", response_model=PlaylistID, tags=["Playlists"])
+def delete_playlist_endpoint(id: int, session: SessionDep):
+    deleted = delete_playlist(id, session)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Playlist not found")
+    return deleted
+
+
+@app.post("/playlist/{playlist_id}/song/{song_id}", tags=["Playlists"])
+def add_song(playlist_id: int, song_id: int, session: SessionDep):
+    result, error = add_song_to_playlist(playlist_id, song_id, session)
+    if error == "playlist":
+        raise HTTPException(status_code=404, detail="Playlist not found")
+    if error == "song":
+        raise HTTPException(status_code=404, detail="Song not found")
+    if error == "duplicate":
+        raise HTTPException(status_code=400, detail="Song already in playlist")
+    return {"message": "Song added to playlist"}
+
+
+@app.delete("/playlist/{playlist_id}/song/{song_id}", tags=["Playlists"])
+def remove_song(playlist_id: int, song_id: int, session: SessionDep):
+    result = remove_song_from_playlist(playlist_id, song_id, session)
+    if not result:
+        raise HTTPException(status_code=404, detail="Song not in playlist")
+    return {"message": "Song removed from playlist"}
+
+
+@app.get("/playlist/{id}/songs", response_model=list[SongID], tags=["Playlists"])
+def get_playlist_songs(id: int, session: SessionDep):
+    playlist = get_one_playlist(id, session)
+    if not playlist:
+        raise HTTPException(status_code=404, detail="Playlist not found")
+    return get_songs_of_playlist(id, session)
