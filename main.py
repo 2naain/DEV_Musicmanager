@@ -41,12 +41,28 @@ async def image_save_remote(file: UploadFile = File(...)):
 # ==========================
 
 @app.post("/song", response_model=SongID, tags=["Songs"])
-async def create_song(song: SongBase, session: SessionDep):
-    artist = findArtist(song.artist_id, session)
-    if artist:
-        return await createSong_db(song, session)
-    else:
+async def create_song(
+        title: str = Form(),
+        genre: Optional[str] = Form(None),
+        duration: Optional[int] = Form(None),
+        artist_id: int = Form(...),
+        image: UploadFile = File(...),
+        session: Session = Depends(get_session)):
+
+    artist = findArtist(artist_id, session)
+    if not artist:
         raise HTTPException(status_code=404, detail="Artist not found")
+
+    image_url = save_img_remote(image)
+
+    new_song = SongBase(
+        title=title,
+        genre=genre,
+        duration=duration,
+        artist_id=artist_id,
+        image_url=image_url
+    )
+    return await createSong_db(new_song, session)
 
 
 @app.get("/song", response_model=list[SongID], tags=["Songs"])
