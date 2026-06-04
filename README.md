@@ -83,7 +83,35 @@ PlaylistID
 
 ---
 
-#
+## 🔄 Diagrama de actividades
+Usuario
+│
+├──► GET /
+│        └──► Ve estadísticas + canciones recientes
+│
+├──► GET /songs
+│        ├──► Lista canciones (con buscador ?q=)
+│        └──► GET /songs/create
+│                  └──► Valida datos (front + back)
+│                  └──► POST /songs/create → redirige a /songs
+│
+├──► GET /artists
+│        ├──► Lista artistas (con buscador ?q=)
+│        └──► GET /artists/create
+│                  └──► Valida datos (front + back)
+│                  └──► POST /artists/create → redirige a /artists
+│
+└──► GET /playlists
+├──► Lista playlists (con buscador ?q=)
+├──► GET /playlists/create
+│         └──► Valida datos (front + back)
+│         └──► POST /playlists/create → redirige a /playlists
+└──► GET /playlists/{id}
+├──► Ve canciones de la playlist
+├──► Agrega canción → POST /playlists/{id}/add
+└──► Quita canción → POST /playlists/{id}/remove/{song_id}
+
+---
 
 ## 🌐 Endpoints
 
@@ -147,3 +175,37 @@ PlaylistID
 - **Hosting:** Render
 
 ### Diagrama de despliegue
+
+```
+Cliente (Navegador)
+        │  HTTP
+        ▼
+  Render (FastAPI)
+   ├── API REST (/song, /artist, /playlist)
+   ├── Frontend HTML (Jinja2 SSR)
+   └── Imágenes (UploadFile)
+        ├──► Neon DB (PostgreSQL)
+        │       └── canciones, artistas, playlists
+        └──► Supabase Storage
+                └── imágenes públicas (image_url)
+```
+
+---
+
+## 📄 Documento Técnico
+
+El proyecto cuenta con un documento técnico completo que incluye:
+
+- Arquitectura del sistema y decisiones de diseño
+- Modelo de datos detallado con restricciones por entidad
+- Descripción completa de la API REST
+- Módulo de almacenamiento de imágenes
+- Descripción de la interfaz de usuario
+- Infraestructura de despliegue
+- Consideraciones técnicas (borrado lógico, búsqueda ILIKE, validación SQLModel)
+- Conclusiones y trabajo futuro
+
+📎 **[documentacionproyectodev.pdf](documentacionproyectodev.pdf)**
+
+> **Autor:** Juan Diego Lozano  
+> **Institución:** Universidad Católica de Colombia · 2026
