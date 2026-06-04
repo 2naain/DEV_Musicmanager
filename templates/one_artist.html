@@ -2,7 +2,11 @@
 {% block title %}{{ artist.name }} — MusicItself{% endblock %}
 {% block content %}
 <div style="max-width: 480px;">
+    {% if artist.image_url %}
+    <img src="{{ artist.image_url }}" style="width:100%; height:200px; object-fit:cover; border-radius:12px; margin-bottom:20px;">
+{% else %}
     <div style="width:100%; height:200px; background:#1a1a1a; border-radius:12px; margin-bottom:20px; display:flex; align-items:center; justify-content:center; font-size:5rem;">🎤</div>
+{% endif %}
     <h2 style="color:#fff; font-weight:600;">{{ artist.name }}</h2>
     <div style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:12px; padding:20px; margin-top:16px;">
         <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #222;">
