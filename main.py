@@ -223,6 +223,19 @@ async def song_added(
     await createSong_db(new_song, session)
     return RedirectResponse("/songs", status_code=302)
 
+@app.get("/artists", response_class=HTMLResponse, tags=["Frontend"])
+def show_all_artists_html(request: Request, session: Session = Depends(get_session)):
+    artists = findAllArtists(session)
+    return templates.TemplateResponse(request, "all_artists.html", {"artist_list": artists})
+
+
+@app.get("/artists/{id}", response_class=HTMLResponse, tags=["Frontend"])
+def show_one_artist_html(request: Request, id: int, session: SessionDep):
+    artist = findArtist(id, session)
+    if not artist:
+        raise HTTPException(status_code=404, detail="Artist not found")
+    return templates.TemplateResponse(request, "one_artist.html", {"artist": artist})
+
 
 # ==========================
 # PLAYLIST

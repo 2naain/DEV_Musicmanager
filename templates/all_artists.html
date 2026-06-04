@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Artistas — MusicItself{% endblock %}
+{% block content %}
+<p class="page-title">Artistas</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+    {% for artist in artist_list %}
+    <div class="song-card">
+        <div class="song-card-placeholder">🎤</div>
+        <div class="song-card-body">
+            <div class="song-card-title">{{ artist.name }}</div>
+            <div class="song-card-meta">
+                <span>id: {{ artist.id }}</span>
+            </div>
+        </div>
+        <a href="/artists/{{ artist.id }}" class="detail-btn">Ver detalle →</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
