@@ -18,7 +18,10 @@ async def show_all_songs_db(session: Session):
 
 async def find_one_song_db(id: int, session: Session):
     try:
-        return session.get_one(SongID, id)
+        song = session.get_one(SongID, id)
+        if not song.is_active:
+            return None
+        return song
     except NoResultFound:
         return None
 

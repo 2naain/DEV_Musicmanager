@@ -14,7 +14,6 @@ from sqlmodel import Session
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from models.playlist import PlaylistBase, PlaylistID
-from models.playlist_song import PlaylistSong
 from models.song import SongBase, SongID, SongUpdate
 from models.artist import ArtistBase, ArtistID
 from db import SessionDep, create_all_tables, get_session

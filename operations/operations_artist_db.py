@@ -14,7 +14,10 @@ def createArtist(artist: ArtistBase, session: Session):
 
 def findArtist(id: int, session: Session):
     try:
-        return session.get_one(ArtistID, id)
+        artist = session.get_one(ArtistID, id)
+        if not artist.is_active:
+            return None
+        return artist
     except NoResultFound:
         return None
 

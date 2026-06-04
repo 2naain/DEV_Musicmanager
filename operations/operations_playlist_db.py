@@ -19,10 +19,12 @@ def get_all_playlists(session: Session):
 
 def get_one_playlist(id: int, session: Session):
     try:
-        return session.get_one(PlaylistID, id)
+        playlist = session.get_one(PlaylistID, id)
+        if not playlist.is_active:
+            return None
+        return playlist
     except NoResultFound:
         return None
-
 
 def update_playlist(id: int, new_data: PlaylistBase, session: Session):
     playlist = get_one_playlist(id, session)
