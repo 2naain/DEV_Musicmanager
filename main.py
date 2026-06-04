@@ -26,6 +26,14 @@ from utils import save_img_local, save_img_remote
 app = FastAPI(lifespan=create_all_tables)
 
 templates = Jinja2Templates(directory="templates")
+def format_duration(seconds):
+    if not seconds:
+        return "0:00"
+    minutes = seconds // 60
+    secs = seconds % 60
+    return f"{minutes}:{secs:02d}"
+
+templates.env.filters["duration"] = format_duration
 
 
 # ==========================
