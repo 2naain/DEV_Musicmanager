@@ -21,7 +21,7 @@ def findArtist(id: int, session: Session):
 
 def findAllArtists(session: Session):
     from sqlmodel import select
-    return session.exec(select(ArtistID)).all()
+    return session.exec(select(ArtistID).where(ArtistID.is_active == True)).all()
 
 
 def updateArtist(id: int, new_data: ArtistBase, session: Session):
@@ -40,6 +40,8 @@ def deleteArtist(id: int, session: Session):
     artist = findArtist(id, session)
     if artist is None:
         return None
-    session.delete(artist)
+    artist.is_active = False
+    session.add(artist)
     session.commit()
+    session.refresh(artist)
     return artist

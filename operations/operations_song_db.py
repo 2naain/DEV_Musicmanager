@@ -13,7 +13,7 @@ async def createSong_db(song: SongBase, session: Session):
 
 
 async def show_all_songs_db(session: Session):
-    return session.exec(select(SongID)).all()
+    return session.exec(select(SongID).where(SongID.is_active == True)).all()
 
 
 async def find_one_song_db(id: int, session: Session):
@@ -38,8 +38,10 @@ async def update_one_song_db(id: int, new_song: SongUpdate, session: Session):
 def kill_one_song_db(id: int, session: Session):
     try:
         song = session.get_one(SongID, id)
-        session.delete(song)
+        song.is_active = False
+        session.add(song)
         session.commit()
+        session.refresh(song)
         return song
     except NoResultFound:
         return None

@@ -14,7 +14,7 @@ def create_playlist(playlist: PlaylistBase, session: Session):
 
 
 def get_all_playlists(session: Session):
-    return session.exec(select(PlaylistID)).all()
+    return session.exec(select(PlaylistID).where(PlaylistID.is_active == True)).all()
 
 
 def get_one_playlist(id: int, session: Session):
@@ -40,8 +40,10 @@ def delete_playlist(id: int, session: Session):
     playlist = get_one_playlist(id, session)
     if playlist is None:
         return None
-    session.delete(playlist)
+    playlist.is_active = False
+    session.add(playlist)
     session.commit()
+    session.refresh(playlist)
     return playlist
 
 
