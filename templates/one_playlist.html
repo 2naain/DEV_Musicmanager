@@ -7,7 +7,24 @@
         <p style="color:#666; font-size:14px;">{{ playlist.description or "Sin descripción" }}</p>
     </div>
 
-    <p class="page-title" style="font-size:16px;">Canciones</p>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <p class="page-title" style="font-size:16px; margin:0;">Canciones</p>
+        <button onclick="document.getElementById('add-panel').classList.toggle('d-none')"
+                class="btn btn-primary" style="font-size:13px;">+ Agregar canción</button>
+    </div>
+
+    <div id="add-panel" class="d-none" style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:10px; padding:16px; margin-bottom:20px;">
+        <form action="/playlists/{{ playlist.id }}/add" method="post">
+            <label class="form-label" style="font-size:13px;">Selecciona una canción</label>
+            <select name="song_id" class="form-control" required>
+                <option value="">— Elige una canción —</option>
+                {% for song in all_songs %}
+                <option value="{{ song.id }}">{{ song.title }} — {{ song.genre or "Sin género" }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary w-100" style="margin-top:12px;">Agregar</button>
+        </form>
+    </div>
 
     {% if songs %}
     <div style="display:flex; flex-direction:column; gap:10px;">
@@ -22,7 +39,10 @@
                 <div style="color:#fff; font-weight:600; font-size:14px;">{{ song.title }}</div>
                 <div style="color:#666; font-size:12px;">{{ song.duration | duration }}</div>
             </div>
-            <a href="/songs/{{ song.id }}" style="color:#555; font-size:12px; text-decoration:none;">Ver →</a>
+            <a href="/songs/{{ song.id }}" style="color:#555; font-size:12px; text-decoration:none; margin-right:8px;">Ver →</a>
+            <form action="/playlists/{{ playlist.id }}/remove/{{ song.id }}" method="post" style="margin:0;">
+                <button type="submit" style="background:none; border:none; color:#555; font-size:12px; cursor:pointer;">✕ Quitar</button>
+            </form>
         </div>
         {% endfor %}
     </div>
