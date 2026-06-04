@@ -213,9 +213,11 @@ async def song_added(
         "/songs",
         status_code=302
     )
-
+# ==========================
+# PLAYLIST
+# ==========================
 @app.post("/playlist", response_model=PlaylistID, tags=["Playlists"])
-def create_playlist_endpoint(playlist: PlaylistBase, session: SessionDep):
+def create_playlist(playlist: PlaylistBase, session: SessionDep):
     return create_playlist(playlist, session)
 
 
@@ -233,7 +235,7 @@ def get_playlist(id: int, session: SessionDep):
 
 
 @app.patch("/playlist/{id}", response_model=PlaylistID, tags=["Playlists"])
-def update_playlist_endpoint(id: int, playlist: PlaylistBase, session: SessionDep):
+def update_playlist(id: int, playlist: PlaylistBase, session: SessionDep):
     updated = update_playlist(id, playlist, session)
     if not updated:
         raise HTTPException(status_code=404, detail="Playlist not found")
@@ -241,7 +243,7 @@ def update_playlist_endpoint(id: int, playlist: PlaylistBase, session: SessionDe
 
 
 @app.delete("/playlist/{id}", response_model=PlaylistID, tags=["Playlists"])
-def delete_playlist_endpoint(id: int, session: SessionDep):
+def delete_playlist(id: int, session: SessionDep):
     deleted = delete_playlist(id, session)
     if not deleted:
         raise HTTPException(status_code=404, detail="Playlist not found")
