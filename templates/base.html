@@ -233,8 +233,10 @@
 
         </nav>
 
-        <form action="/songs" method="get" class="d-flex align-items-center gap-2">
-            <input class="search-input" type="search" name="q" placeholder="🔍 Buscar canción...">
+        <form action="{{ search_action | default('/songs') }}" method="get" class="d-flex align-items-center gap-2">
+            <input class="search-input" type="search" name="q"
+                   value="{{ q | default('') }}"
+                   placeholder="🔍 {{ search_placeholder | default('Buscar canción...') }}">
         </form>
     </div>
 </header>

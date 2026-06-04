@@ -22,9 +22,12 @@ def findArtist(id: int, session: Session):
         return None
 
 
-def findAllArtists(session: Session):
+def findAllArtists(session: Session, q: str = None):
     from sqlmodel import select
-    return session.exec(select(ArtistID).where(ArtistID.is_active == True)).all()
+    query = select(ArtistID).where(ArtistID.is_active == True)
+    if q:
+        query = query.where(ArtistID.name.ilike(f"%{q}%"))
+    return session.exec(query).all()
 
 
 def updateArtist(id: int, new_data: ArtistBase, session: Session):

@@ -160,7 +160,7 @@ def delete_artist(id: int, session: SessionDep):
 
 
 # ==========================
-# FRONTEND
+# FRONTEND - SONGS
 # ==========================
 
 @app.get("/", response_class=HTMLResponse, tags=["Frontend"])
@@ -174,13 +174,19 @@ async def home(request: Request):
 @app.get("/songs", response_class=HTMLResponse, tags=["Frontend"])
 async def show_all_songs_html(
     request: Request,
+    q: Optional[str] = None,
     session: Session = Depends(get_session)
 ):
-    songs = await show_all_songs_db(session)
+    songs = await show_all_songs_db(session, q=q)
     return templates.TemplateResponse(
         request,
         "all_songs.html",
-        {"song_list": songs}
+        {
+            "song_list": songs,
+            "q": q,
+            "search_action": "/songs",
+            "search_placeholder": "Buscar canción..."
+        }
     )
 
 
@@ -223,10 +229,24 @@ async def song_added(
     await createSong_db(new_song, session)
     return RedirectResponse("/songs", status_code=302)
 
+
+# ==========================
+# FRONTEND - ARTISTS
+# ==========================
+
 @app.get("/artists", response_class=HTMLResponse, tags=["Frontend"])
-def show_all_artists_html(request: Request, session: Session = Depends(get_session)):
-    artists = findAllArtists(session)
-    return templates.TemplateResponse(request, "all_artists.html", {"artist_list": artists})
+def show_all_artists_html(
+    request: Request,
+    q: Optional[str] = None,
+    session: Session = Depends(get_session)
+):
+    artists = findAllArtists(session, q=q)
+    return templates.TemplateResponse(request, "all_artists.html", {
+        "artist_list": artists,
+        "q": q,
+        "search_action": "/artists",
+        "search_placeholder": "Buscar artista..."
+    })
 
 
 @app.get("/artists/{id}", response_class=HTMLResponse, tags=["Frontend"])
@@ -238,7 +258,38 @@ def show_one_artist_html(request: Request, id: int, session: SessionDep):
 
 
 # ==========================
-# PLAYLIST
+# FRONTEND - PLAYLISTS
+# ==========================
+
+@app.get("/playlists", response_class=HTMLResponse, tags=["Frontend"])
+def show_all_playlists_html(
+    request: Request,
+    q: Optional[str] = None,
+    session: Session = Depends(get_session)
+):
+    playlists = get_all_playlists(session, q=q)
+    return templates.TemplateResponse(request, "all_playlists.html", {
+        "playlist_list": playlists,
+        "q": q,
+        "search_action": "/playlists",
+        "search_placeholder": "Buscar playlist..."
+    })
+
+
+@app.get("/playlists/{id}", response_class=HTMLResponse, tags=["Frontend"])
+def show_one_playlist_html(request: Request, id: int, session: SessionDep):
+    playlist = get_one_playlist(id, session)
+    if not playlist:
+        raise HTTPException(status_code=404, detail="Playlist not found")
+    songs = get_songs_of_playlist(id, session)
+    return templates.TemplateResponse(request, "one_playlist.html", {
+        "playlist": playlist,
+        "songs": songs
+    })
+
+
+# ==========================
+# PLAYLIST API
 # ==========================
 
 @app.post("/playlist", response_model=PlaylistID, tags=["Playlists"])
