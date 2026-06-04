@@ -235,7 +235,7 @@
 
         <form action="{{ search_action | default('/songs') }}" method="get" class="d-flex align-items-center gap-2">
             <input class="search-input" type="search" name="q"
-                   value="{{ q | default('') }}"
+                   value="{{ q if q else '' }}"
                    placeholder="🔍 {{ search_placeholder | default('Buscar canción...') }}">
         </form>
     </div>

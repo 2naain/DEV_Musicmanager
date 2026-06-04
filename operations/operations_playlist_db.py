@@ -29,6 +29,7 @@ def get_one_playlist(id: int, session: Session):
     except NoResultFound:
         return None
 
+
 def update_playlist(id: int, new_data: PlaylistBase, session: Session):
     playlist = get_one_playlist(id, session)
     if playlist is None:

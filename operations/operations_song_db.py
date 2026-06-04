@@ -1,6 +1,5 @@
 from sqlalchemy.exc import NoResultFound
 from sqlmodel import Session, select
-
 from models.song import SongBase, SongID, SongUpdate
 
 

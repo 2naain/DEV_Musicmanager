@@ -1,6 +1,5 @@
 from sqlalchemy.exc import NoResultFound
-from sqlmodel import Session
-
+from sqlmodel import Session, select
 from models.artist import ArtistBase, ArtistID
 
 
@@ -23,7 +22,6 @@ def findArtist(id: int, session: Session):
 
 
 def findAllArtists(session: Session, q: str = None):
-    from sqlmodel import select
     query = select(ArtistID).where(ArtistID.is_active == True)
     if q:
         query = query.where(ArtistID.name.ilike(f"%{q}%"))
