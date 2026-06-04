@@ -277,6 +277,7 @@ async def create_song_html(
 
 @app.post("/songs/create", response_class=HTMLResponse, tags=["Frontend"])
 async def song_created(
+    request: Request,
     title: str = Form(...),
     genre: Optional[str] = Form(None),
     duration: Optional[int] = Form(None),
@@ -284,16 +285,23 @@ async def song_created(
     image: UploadFile = File(None),
     session: Session = Depends(get_session)
 ):
+    artists = findAllArtists(session)
+    if len(title.strip()) < 2:
+        return templates.TemplateResponse(request, "create_song.html", {
+            "error": "El título debe tener al menos 2 caracteres",
+            "artists": artists,
+            "create_url": "/songs/create"
+        })
+    if duration and duration <= 0:
+        return templates.TemplateResponse(request, "create_song.html", {
+            "error": "La duración debe ser mayor a 0",
+            "artists": artists,
+            "create_url": "/songs/create"
+        })
     image_url = None
     if image and image.filename:
         image_url = save_img_remote(image)
-    new_song = SongBase(
-        title=title,
-        genre=genre,
-        duration=duration,
-        artist_id=artist_id,
-        image_url=image_url
-    )
+    new_song = SongBase(title=title.strip(), genre=genre, duration=duration, artist_id=artist_id, image_url=image_url)
     await createSong_db(new_song, session)
     return RedirectResponse("/songs", status_code=302)
 
@@ -336,14 +344,20 @@ def create_artist_html(request: Request):
 
 @app.post("/artists/create", response_class=HTMLResponse, tags=["Frontend"])
 async def artist_created(
+    request: Request,
     name: str = Form(...),
     image: UploadFile = File(None),
     session: Session = Depends(get_session)
 ):
+    if len(name.strip()) < 2:
+        return templates.TemplateResponse(request, "create_artist.html", {
+            "error": "El nombre debe tener al menos 2 caracteres",
+            "create_url": "/artists/create"
+        })
     image_url = None
     if image and image.filename:
         image_url = save_img_remote(image)
-    new_artist = ArtistBase(name=name, image_url=image_url)
+    new_artist = ArtistBase(name=name.strip(), image_url=image_url)
     createArtist(new_artist, session)
     return RedirectResponse("/artists", status_code=302)
 
@@ -386,11 +400,17 @@ def create_playlist_html(request: Request):
 
 @app.post("/playlists/create", response_class=HTMLResponse, tags=["Frontend"])
 def playlist_created(
+    request: Request,
     name: str = Form(...),
     description: Optional[str] = Form(None),
     session: Session = Depends(get_session)
 ):
-    new_playlist = PlaylistBase(name=name, description=description)
+    if len(name.strip()) < 2:
+        return templates.TemplateResponse(request, "create_playlist.html", {
+            "error": "El nombre debe tener al menos 2 caracteres",
+            "create_url": "/playlists/create"
+        })
+    new_playlist = PlaylistBase(name=name.strip(), description=description)
     create_playlist_db(new_playlist, session)
     return RedirectResponse("/playlists", status_code=302)
 
