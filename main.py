@@ -20,33 +20,41 @@ app = FastAPI(lifespan=create_all_tables)
 templates = Jinja2Templates(directory="templates")
 
 
-@app.post("/image/local")
+# ==========================
+# IMAGES
+# ==========================
+
+@app.post("/image/local", tags=["Images"])
 async def image_save_local(img: UploadFile = File(...)):
     path = save_img_local(img)
     return {"path for your image": path}
 
 
-@app.post("/image/remote")
+@app.post("/image/remote", tags=["Images"])
 async def image_save_remote(file: UploadFile = File(...)):
     url_img = save_img_remote(file)
     return {"url for your image": url_img}
 
 
-@app.post("/song", response_model=SongID)
+# ==========================
+# SONGS
+# ==========================
+
+@app.post("/song", response_model=SongID, tags=["Songs"])
 async def create_song(song: SongBase, session: SessionDep):
     artist = findArtist(song.artist_id, session)
     if artist:
         return await createSong_db(song, session)
     else:
-        raise HTTPException(status_code=404, detail="artist not found")
+        raise HTTPException(status_code=404, detail="Artist not found")
 
 
-@app.get("/song", response_model=list[SongID])
+@app.get("/song", response_model=list[SongID], tags=["Songs"])
 async def show_songs(session: SessionDep):
     return await show_all_songs_db(session)
 
 
-@app.get("/song/{id}", response_model=SongID)
+@app.get("/song/{id}", response_model=SongID, tags=["Songs"])
 async def show_one_song(id: int, session: SessionDep):
     song = await find_one_song_db(id, session)
     if not song:
@@ -54,7 +62,12 @@ async def show_one_song(id: int, session: SessionDep):
     return song
 
 
-@app.patch("/song/{id}", response_model=SongID, response_model_exclude={"title", "genre"})
+@app.patch(
+    "/song/{id}",
+    response_model=SongID,
+    response_model_exclude={"title", "genre"},
+    tags=["Songs"]
+)
 async def update_song(id: int, song: SongUpdate, session: SessionDep):
     update = await update_one_song_db(id, song, session)
     if not update:
@@ -62,7 +75,7 @@ async def update_song(id: int, song: SongUpdate, session: SessionDep):
     return update
 
 
-@app.delete("/song/{id}", response_model=SongBase)
+@app.delete("/song/{id}", response_model=SongBase, tags=["Songs"])
 async def delete_one_song(id: int, session: SessionDep):
     deleted = kill_one_song_db(id, session)
     if not deleted:
@@ -70,15 +83,21 @@ async def delete_one_song(id: int, session: SessionDep):
     return deleted
 
 
-@app.post("/artist", response_model=ArtistID)
+# ==========================
+# ARTISTS
+# ==========================
+
+@app.post("/artist", response_model=ArtistID, tags=["Artists"])
 def create_artist(artist: ArtistBase, session: SessionDep):
     return createArtist(artist, session)
-@app.get("/artist", response_model=list[ArtistID])
+
+
+@app.get("/artist", response_model=list[ArtistID], tags=["Artists"])
 def get_all_artists(session: SessionDep):
     return findAllArtists(session)
 
 
-@app.get("/artist/{id}", response_model=ArtistID)
+@app.get("/artist/{id}", response_model=ArtistID, tags=["Artists"])
 def get_one_artist(id: int, session: SessionDep):
     artist = findArtist(id, session)
     if not artist:
@@ -86,7 +105,7 @@ def get_one_artist(id: int, session: SessionDep):
     return artist
 
 
-@app.patch("/artist/{id}", response_model=ArtistID)
+@app.patch("/artist/{id}", response_model=ArtistID, tags=["Artists"])
 def update_artist(id: int, artist: ArtistBase, session: SessionDep):
     updated = updateArtist(id, artist, session)
     if not updated:
@@ -94,7 +113,7 @@ def update_artist(id: int, artist: ArtistBase, session: SessionDep):
     return updated
 
 
-@app.delete("/artist/{id}", response_model=ArtistID)
+@app.delete("/artist/{id}", response_model=ArtistID, tags=["Artists"])
 def delete_artist(id: int, session: SessionDep):
     deleted = deleteArtist(id, session)
     if not deleted:
@@ -102,35 +121,71 @@ def delete_artist(id: int, session: SessionDep):
     return deleted
 
 
-@app.get("/", response_class=HTMLResponse)
+# ==========================
+# FRONTEND
+# ==========================
+
+@app.get("/", response_class=HTMLResponse, tags=["Frontend"])
 async def home(request: Request):
-    return templates.TemplateResponse({"request": request}, "base.html")
+    return templates.TemplateResponse(
+        {"request": request},
+        "base.html"
+    )
 
 
-@app.get("/songs", response_class=HTMLResponse)
-async def show_all_songs_html(request: Request, session: Session = Depends(get_session)):
+@app.get("/songs", response_class=HTMLResponse, tags=["Frontend"])
+async def show_all_songs_html(
+    request: Request,
+    session: Session = Depends(get_session)
+):
     songs = await show_all_songs_db(session)
-    return templates.TemplateResponse(request, "all_songs.html", {"song_list": songs})
+    return templates.TemplateResponse(
+        request,
+        "all_songs.html",
+        {"song_list": songs}
+    )
 
 
-@app.get("/songs/{id}", response_class=HTMLResponse)
-async def show_one_song_html(request: Request, id: int, session: SessionDep):
+@app.get("/songs/{id}", response_class=HTMLResponse, tags=["Frontend"])
+async def show_one_song_html(
+    request: Request,
+    id: int,
+    session: SessionDep
+):
     one_song = await find_one_song_db(id, session)
-    return templates.TemplateResponse(request, "one_song.html", {"song": one_song})
+    return templates.TemplateResponse(
+        request,
+        "one_song.html",
+        {"song": one_song}
+    )
 
 
-@app.get("/songs/create/", response_class=HTMLResponse)
+@app.get("/songs/create/", response_class=HTMLResponse, tags=["Frontend"])
 async def add_song_html(request: Request):
-    return templates.TemplateResponse(request, "add_song.html")
+    return templates.TemplateResponse(
+        request,
+        "add_song.html"
+    )
 
 
-@app.post("/songs/create/", response_class=HTMLResponse)
+@app.post("/songs/create/", response_class=HTMLResponse, tags=["Frontend"])
 async def song_added(
-        title: str = Form(),
-        genre: Optional[str] = Form(None),
-        duration: Optional[int] = Form(None),
-        artist_id: Optional[int] = Form(None),
-        session: Session = Depends(get_session)):
-    new_song = SongBase(title=title, genre=genre, duration=duration, artist_id=artist_id)
+    title: str = Form(),
+    genre: Optional[str] = Form(None),
+    duration: Optional[int] = Form(None),
+    artist_id: Optional[int] = Form(None),
+    session: Session = Depends(get_session)
+):
+    new_song = SongBase(
+        title=title,
+        genre=genre,
+        duration=duration,
+        artist_id=artist_id
+    )
+
     await create_song(new_song, session)
-    return RedirectResponse("/songs", status_code=302)
+
+    return RedirectResponse(
+        "/songs",
+        status_code=302
+    )
