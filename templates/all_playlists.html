@@ -2,8 +2,10 @@
 {% block title %}Playlists — MusicItself{% endblock %}
 {% block content %}
 <p class="page-title">Playlists</p>
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;">
-    {% for playlist in playlist_list %}
+html<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+    <p class="page-title" style="margin:0;">Playlists</p>
+    <a href="/playlists/create" class="btn btn-primary" style="font-size:13px;">+ Crear playlist</a>
+</div>
     <div class="song-card">
         <div class="song-card-placeholder">🎶</div>
         <div class="song-card-body">

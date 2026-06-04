@@ -2,8 +2,10 @@
 {% block title %}Artistas — MusicItself{% endblock %}
 {% block content %}
 <p class="page-title">Artistas</p>
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
-    {% for artist in artist_list %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+    <p class="page-title" style="margin:0;">Artistas</p>
+    <a href="/artists/create" class="btn btn-primary" style="font-size:13px;">+ Agregar artista</a>
+</div>
     <div class="song-card">
         <div class="song-card-placeholder">🎤</div>
         <div class="song-card-body">
