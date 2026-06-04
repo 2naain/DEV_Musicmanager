@@ -1,9 +1,8 @@
 from sqlalchemy.exc import NoResultFound
 from sqlmodel import Session, select
-from models.playlist import PlaylistBase, PlaylistID
 from models.playlist_song import PlaylistSong
 from models.song import SongID
-
+from models.playlist import PlaylistBase, PlaylistID, PlaylistUpdate
 
 def create_playlist(playlist: PlaylistBase, session: Session):
     new_playlist = PlaylistID.model_validate(playlist)
