@@ -8,13 +8,13 @@ from operations.operations_playlist_db import (
     remove_song_from_playlist,
     get_songs_of_playlist
 )
-)
 from fastapi import FastAPI, HTTPException, UploadFile, File, Request, Form, Depends
 from typing import Optional
 from sqlmodel import Session
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-
+from models.playlist import PlaylistBase, PlaylistID
+from models.playlist_song import PlaylistSong
 from models.song import SongBase, SongID, SongUpdate
 from models.artist import ArtistBase, ArtistID
 from db import SessionDep, create_all_tables, get_session
@@ -30,12 +30,15 @@ from utils import save_img_local, save_img_remote
 app = FastAPI(lifespan=create_all_tables)
 
 templates = Jinja2Templates(directory="templates")
+
+
 def format_duration(seconds):
     if not seconds:
         return "0:00"
     minutes = seconds // 60
     secs = seconds % 60
     return f"{minutes}:{secs:02d}"
+
 
 templates.env.filters["duration"] = format_duration
 
@@ -218,16 +221,14 @@ async def song_added(
         duration=duration,
         artist_id=artist_id
     )
+    await createSong_db(new_song, session)
+    return RedirectResponse("/songs", status_code=302)
 
-    await create_song(new_song, session)
 
-    return RedirectResponse(
-        "/songs",
-        status_code=302
-    )
 # ==========================
 # PLAYLIST
 # ==========================
+
 @app.post("/playlist", response_model=PlaylistID, tags=["Playlists"])
 def create_playlist_endpoint(playlist: PlaylistBase, session: SessionDep):
     return create_playlist_db(playlist, session)
