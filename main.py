@@ -299,7 +299,7 @@ def create_playlist_endpoint(playlist: PlaylistBase, session: SessionDep):
 
 @app.get("/playlist", response_model=list[PlaylistID], tags=["Playlists"])
 def get_playlists(session: SessionDep):
-    return get_all_playlists(session)
+    return get_all_playlists(session, q=None)
 
 
 @app.get("/playlist/{id}", response_model=PlaylistID, tags=["Playlists"])
