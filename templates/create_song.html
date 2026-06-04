@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Agregar Canción — MusicItself{% endblock %}
+{% block content %}
+<p class="page-title">Agregar Canción</p>
+
+<div class="form-card">
+    <form method="post" action="{{ create_url }}" enctype="multipart/form-data">
+
+        <div class="mb-3">
+            <label class="form-label" for="title">Título *</label>
+            <input class="form-control" type="text" id="title" name="title"
+                   placeholder="Nombre de la canción" required minlength="2" maxlength="100">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="genre">Género</label>
+            <select class="form-select" id="genre" name="genre">
+                <option value="">— Sin género —</option>
+                <option value="pop">Pop</option>
+                <option value="rock">Rock</option>
+                <option value="jazz">Jazz</option>
+                <option value="hiphop">Hip-Hop</option>
+                <option value="electronica">Electrónica</option>
+                <option value="clasica">Clásica</option>
+                <option value="reggaeton">Reggaeton</option>
+                <option value="metal">Metal</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="duration">Duración (segundos)</label>
+            <input class="form-control" type="number" id="duration" name="duration"
+                   placeholder="Ej: 210" min="1" max="1000">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="artist_id">Artista *</label>
+            <select class="form-select" id="artist_id" name="artist_id" required>
+                <option value="">— Selecciona un artista —</option>
+                {% for artist in artists %}
+                <option value="{{ artist.id }}">{{ artist.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label" for="image">Imagen (opcional)</label>
+            <input class="form-control" type="file" id="image" name="image" accept="image/*">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Agregar canción</button>
+    </form>
+    <a href="/songs" style="display:inline-block; margin-top:16px; color:#666; text-decoration:none; font-size:13px;">← Volver</a>
+</div>
+{% endblock %}
