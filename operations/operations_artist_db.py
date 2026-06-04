@@ -1,6 +1,6 @@
 from sqlalchemy.exc import NoResultFound
 from sqlmodel import Session, select
-from models.artist import ArtistBase, ArtistID
+from models.artist import ArtistBase, ArtistID, ArtistUpdate
 
 
 def createArtist(artist: ArtistBase, session: Session):
