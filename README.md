@@ -83,35 +83,7 @@ PlaylistID
 
 ---
 
-## 🔄 Diagrama de actividades
-Usuario
-│
-├──► GET /
-│        └──► Ve estadísticas + canciones recientes
-│
-├──► GET /songs
-│        ├──► Lista canciones (con buscador ?q=)
-│        └──► GET /songs/create
-│                  └──► Valida datos (front + back)
-│                  └──► POST /songs/create → redirige a /songs
-│
-├──► GET /artists
-│        ├──► Lista artistas (con buscador ?q=)
-│        └──► GET /artists/create
-│                  └──► Valida datos (front + back)
-│                  └──► POST /artists/create → redirige a /artists
-│
-└──► GET /playlists
-├──► Lista playlists (con buscador ?q=)
-├──► GET /playlists/create
-│         └──► Valida datos (front + back)
-│         └──► POST /playlists/create → redirige a /playlists
-└──► GET /playlists/{id}
-├──► Ve canciones de la playlist
-├──► Agrega canción → POST /playlists/{id}/add
-└──► Quita canción → POST /playlists/{id}/remove/{song_id}
-
----
+#
 
 ## 🌐 Endpoints
 
