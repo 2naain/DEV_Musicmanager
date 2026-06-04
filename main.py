@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Request, Form, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from sqlmodel import Session
+from sqlmodel import Session, select
 from typing import Optional
 
 from db import SessionDep, create_all_tables, get_session
@@ -407,12 +407,12 @@ def show_one_playlist_html(request: Request, id: int, session: SessionDep):
     })
 
 @app.get("/playlists/{id}", response_class=HTMLResponse, tags=["Frontend"])
-async def show_one_playlist_html(request: Request, id: int, session: SessionDep):
+def show_one_playlist_html(request: Request, id: int, session: SessionDep):
     playlist = get_one_playlist(id, session)
     if not playlist:
         raise HTTPException(status_code=404, detail="Playlist not found")
     songs = get_songs_of_playlist(id, session)
-    all_songs = await show_all_songs_db(session)
+    all_songs = session.exec(select(SongID).where(SongID.is_active == True)).all()
     return templates.TemplateResponse(request, "one_playlist.html", {
         "playlist": playlist,
         "songs": songs,
