@@ -231,8 +231,17 @@ def get_playlist_songs_api(id: int, session: SessionDep):
 # ==========================
 
 @app.get("/", response_class=HTMLResponse, tags=["Frontend"])
-async def home(request: Request):
-    return templates.TemplateResponse(request, "base.html", {})
+async def home(request: Request, session: Session = Depends(get_session)):
+    songs = await show_all_songs_db(session)
+    artists = findAllArtists(session)
+    playlists = get_all_playlists(session)
+    return templates.TemplateResponse(request, "home.html", {
+        "search_action": "/songs",
+        "search_placeholder": "Buscar canción...",
+        "songs": songs,
+        "artists": artists,
+        "playlists": playlists
+    })
 
 
 # ==========================
