@@ -1,9 +1,13 @@
-from models.playlist import PlaylistBase, PlaylistID
-from models.playlist_song import PlaylistSong
 from operations.operations_playlist_db import (
-    create_playlist, get_all_playlists, get_one_playlist,
-    update_playlist, delete_playlist, add_song_to_playlist,
-    remove_song_from_playlist, get_songs_of_playlist
+    create_playlist as create_playlist_db,
+    get_all_playlists,
+    get_one_playlist,
+    update_playlist as update_playlist_db,
+    delete_playlist as delete_playlist_db,
+    add_song_to_playlist,
+    remove_song_from_playlist,
+    get_songs_of_playlist
+)
 )
 from fastapi import FastAPI, HTTPException, UploadFile, File, Request, Form, Depends
 from typing import Optional
@@ -225,8 +229,8 @@ async def song_added(
 # PLAYLIST
 # ==========================
 @app.post("/playlist", response_model=PlaylistID, tags=["Playlists"])
-def create_playlist(playlist: PlaylistBase, session: SessionDep):
-    return create_playlist(playlist, session)
+def create_playlist_endpoint(playlist: PlaylistBase, session: SessionDep):
+    return create_playlist_db(playlist, session)
 
 
 @app.get("/playlist", response_model=list[PlaylistID], tags=["Playlists"])
@@ -243,16 +247,16 @@ def get_playlist(id: int, session: SessionDep):
 
 
 @app.patch("/playlist/{id}", response_model=PlaylistID, tags=["Playlists"])
-def update_playlist(id: int, playlist: PlaylistBase, session: SessionDep):
-    updated = update_playlist(id, playlist, session)
+def update_playlist_endpoint(id: int, playlist: PlaylistBase, session: SessionDep):
+    updated = update_playlist_db(id, playlist, session)
     if not updated:
         raise HTTPException(status_code=404, detail="Playlist not found")
     return updated
 
 
 @app.delete("/playlist/{id}", response_model=PlaylistID, tags=["Playlists"])
-def delete_playlist(id: int, session: SessionDep):
-    deleted = delete_playlist(id, session)
+def delete_playlist_endpoint(id: int, session: SessionDep):
+    deleted = delete_playlist_db(id, session)
     if not deleted:
         raise HTTPException(status_code=404, detail="Playlist not found")
     return deleted
