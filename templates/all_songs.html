@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 {% block title %}Canciones — MusicItself{% endblock %}
 {% block content %}
-<p class="page-title">Canciones</p>
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
     <p class="page-title" style="margin:0;">Canciones</p>
     <a href="/songs/create" class="btn btn-primary" style="font-size:13px;">+ Agregar canción</a>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+    {% for song in song_list %}
+        {% include 'song_card.html' %}
+    {% endfor %}
 </div>
 {% endblock %}
