@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Playlists — MusicItself{% endblock %}
+{% block content %}
+<p class="page-title">Playlists</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;">
+    {% for playlist in playlist_list %}
+    <div class="song-card">
+        <div class="song-card-placeholder">🎶</div>
+        <div class="song-card-body">
+            <div class="song-card-title">{{ playlist.name }}</div>
+            <div class="song-card-meta">
+                <span>{{ playlist.description or "Sin descripción" }}</span>
+            </div>
+        </div>
+        <a href="/playlists/{{ playlist.id }}" class="detail-btn">Ver detalle →</a>
+    </div>
+    {% else %}
+    <p style="color:#666;">No hay playlists disponibles.</p>
+    {% endfor %}
+</div>
+{% endblock %}

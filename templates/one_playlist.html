@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ playlist.name }} — MusicItself{% endblock %}
+{% block content %}
+<div style="max-width: 640px;">
+    <div style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:12px; padding:24px; margin-bottom:24px;">
+        <h2 style="color:#fff; font-weight:600; margin-bottom:8px;">🎶 {{ playlist.name }}</h2>
+        <p style="color:#666; font-size:14px;">{{ playlist.description or "Sin descripción" }}</p>
+    </div>
+
+    <p class="page-title" style="font-size:16px;">Canciones</p>
+
+    {% if songs %}
+    <div style="display:flex; flex-direction:column; gap:10px;">
+        {% for song in songs %}
+        <div style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:10px; padding:14px; display:flex; align-items:center; gap:14px;">
+            {% if song.image_url %}
+            <img src="{{ song.image_url }}" style="width:48px; height:48px; border-radius:6px; object-fit:cover;">
+            {% else %}
+            <div style="width:48px; height:48px; background:#222; border-radius:6px; display:flex; align-items:center; justify-content:center;">🎵</div>
+            {% endif %}
+            <div style="flex:1;">
+                <div style="color:#fff; font-weight:600; font-size:14px;">{{ song.title }}</div>
+                <div style="color:#666; font-size:12px;">{{ song.duration | duration }}</div>
+            </div>
+            <a href="/songs/{{ song.id }}" style="color:#555; font-size:12px; text-decoration:none;">Ver →</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="color:#666; font-size:14px;">Esta playlist no tiene canciones aún.</p>
+    {% endif %}
+
+    <a href="/playlists" style="display:inline-block; margin-top:24px; color:#666; text-decoration:none; font-size:13px;">← Volver</a>
+</div>
+{% endblock %}
