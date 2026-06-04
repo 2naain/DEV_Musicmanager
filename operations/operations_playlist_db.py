@@ -69,6 +69,8 @@ def add_song_to_playlist(playlist_id: int, song_id: int, session: Session):
         return None, "duplicate"
     link = PlaylistSong(playlist_id=playlist_id, song_id=song_id)
     session.add(link)
+    song.in_playlist = True  # <-- esto faltaba
+    session.add(song)
     session.commit()
     return link, None
 
@@ -83,6 +85,15 @@ def remove_song_from_playlist(playlist_id: int, song_id: int, session: Session):
     if link is None:
         return None
     session.delete(link)
+
+    other = session.exec(
+        select(PlaylistSong).where(PlaylistSong.song_id == song_id)
+    ).first()
+    if not other:
+        song = session.get(SongID, song_id)
+        if song:
+            song.in_playlist = False
+            session.add(song)
     session.commit()
     return link
 
