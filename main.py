@@ -395,16 +395,6 @@ def playlist_created(
     return RedirectResponse("/playlists", status_code=302)
 
 
-@app.get("/playlists/{id}", response_class=HTMLResponse, tags=["Frontend"])
-def show_one_playlist_html(request: Request, id: int, session: SessionDep):
-    playlist = get_one_playlist(id, session)
-    if not playlist:
-        raise HTTPException(status_code=404, detail="Playlist not found")
-    songs = get_songs_of_playlist(id, session)
-    return templates.TemplateResponse(request, "one_playlist.html", {
-        "playlist": playlist,
-        "songs": songs
-    })
 
 @app.get("/playlists/{id}", response_class=HTMLResponse, tags=["Frontend"])
 def show_one_playlist_html(request: Request, id: int, session: SessionDep):
