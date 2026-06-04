@@ -10,3 +10,9 @@ class PlaylistBase(SQLModel):
 
 class PlaylistID(PlaylistBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
+
+class PlaylistUpdate(PlaylistBase):
+    name: str | None = Field(default=None)
+    description: str | None = Field(default=None)
+    image_url: str | None = Field(default=None)
+    is_active: bool | None = Field(default=None)

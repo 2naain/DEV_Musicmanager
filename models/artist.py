@@ -9,3 +9,8 @@ class ArtistBase(SQLModel):
 
 class ArtistID(ArtistBase, table=True):
     id: int | None = Field(default=None, primary_key=True, gt=0)
+
+class ArtistUpdate(ArtistBase):
+    name: str | None = Field(default=None)
+    image_url: str | None = Field(default=None)
+    is_active: bool | None = Field(default=None)

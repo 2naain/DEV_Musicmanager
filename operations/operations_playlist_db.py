@@ -30,7 +30,7 @@ def get_one_playlist(id: int, session: Session):
         return None
 
 
-def update_playlist(id: int, new_data: PlaylistBase, session: Session):
+def update_playlist(id: int, new_data: PlaylistUpdate, session: Session):
     playlist = get_one_playlist(id, session)
     if playlist is None:
         return None

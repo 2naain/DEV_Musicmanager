@@ -6,8 +6,8 @@ from typing import Optional
 
 from db import SessionDep, create_all_tables, get_session
 from models.song import SongBase, SongID, SongUpdate
-from models.artist import ArtistBase, ArtistID
-from models.playlist import PlaylistBase, PlaylistID
+from models.artist import ArtistBase, ArtistID, ArtistUpdate
+from models.playlist import PlaylistBase, PlaylistID, PlaylistUpdate
 from utils import save_img_remote, save_img_local
 
 from operations.operations_song_db import (
@@ -145,12 +145,11 @@ def get_one_artist_api(id: int, session: SessionDep):
 
 
 @app.patch("/artist/{id}", response_model=ArtistID, tags=["Artists API"])
-def update_artist_api(id: int, artist: ArtistBase, session: SessionDep):
+def update_artist_api(id: int, artist: ArtistUpdate, session: SessionDep):
     updated = updateArtist(id, artist, session)
     if not updated:
         raise HTTPException(status_code=404, detail="Artist not found")
     return updated
-
 
 @app.delete("/artist/{id}", response_model=ArtistID, tags=["Artists API"])
 def delete_artist_api(id: int, session: SessionDep):
@@ -183,12 +182,11 @@ def get_one_playlist_api(id: int, session: SessionDep):
 
 
 @app.patch("/playlist/{id}", response_model=PlaylistID, tags=["Playlists API"])
-def update_playlist_api(id: int, playlist: PlaylistBase, session: SessionDep):
+def update_playlist_api(id: int, playlist: PlaylistUpdate, session: SessionDep):
     updated = update_playlist_db(id, playlist, session)
     if not updated:
         raise HTTPException(status_code=404, detail="Playlist not found")
     return updated
-
 
 @app.delete("/playlist/{id}", response_model=PlaylistID, tags=["Playlists API"])
 def delete_playlist_api(id: int, session: SessionDep):
