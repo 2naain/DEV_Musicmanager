@@ -13,8 +13,11 @@ def create_playlist(playlist: PlaylistBase, session: Session):
     return new_playlist
 
 
-def get_all_playlists(session: Session):
-    return session.exec(select(PlaylistID).where(PlaylistID.is_active == True)).all()
+def get_all_playlists(session: Session, q: str = None):
+    query = select(PlaylistID).where(PlaylistID.is_active == True)
+    if q:
+        query = query.where(PlaylistID.name.ilike(f"%{q}%"))
+    return session.exec(query).all()
 
 
 def get_one_playlist(id: int, session: Session):
