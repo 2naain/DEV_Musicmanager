@@ -23,8 +23,8 @@ async def find_one_song_db(id: int, session: Session):
         return None
 
 
-def update_one_song_db(id: int, new_song: SongUpdate, session: Session):
-    song = find_one_song_db(id, session)
+async def update_one_song_db(id: int, new_song: SongUpdate, session: Session):
+    song = await find_one_song_db(id, session)
     if song is None:
         return None
     song_update = new_song.model_dump(exclude_unset=True)

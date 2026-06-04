@@ -17,3 +17,29 @@ def findArtist(id: int, session: Session):
         return session.get_one(ArtistID, id)
     except NoResultFound:
         return None
+
+
+def findAllArtists(session: Session):
+    from sqlmodel import select
+    return session.exec(select(ArtistID)).all()
+
+
+def updateArtist(id: int, new_data: ArtistBase, session: Session):
+    artist = findArtist(id, session)
+    if artist is None:
+        return None
+    update = new_data.model_dump(exclude_unset=True)
+    artist.sqlmodel_update(update)
+    session.add(artist)
+    session.commit()
+    session.refresh(artist)
+    return artist
+
+
+def deleteArtist(id: int, session: Session):
+    artist = findArtist(id, session)
+    if artist is None:
+        return None
+    session.delete(artist)
+    session.commit()
+    return artist

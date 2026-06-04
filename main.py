@@ -12,7 +12,7 @@ from operations.operations_song_db import (createSong_db,
                                            find_one_song_db,
                                            update_one_song_db,
                                            kill_one_song_db)
-from operations.operations_artist_db import createArtist, findArtist
+from operations.operations_artist_db import createArtist, findArtist, findAllArtists, updateArtist, deleteArtist
 from utils import save_img_local, save_img_remote
 
 app = FastAPI(lifespan=create_all_tables)
@@ -73,11 +73,33 @@ async def delete_one_song(id: int, session: SessionDep):
 @app.post("/artist", response_model=ArtistID)
 def create_artist(artist: ArtistBase, session: SessionDep):
     return createArtist(artist, session)
+@app.get("/artist", response_model=list[ArtistID])
+def get_all_artists(session: SessionDep):
+    return findAllArtists(session)
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+@app.get("/artist/{id}", response_model=ArtistID)
+def get_one_artist(id: int, session: SessionDep):
+    artist = findArtist(id, session)
+    if not artist:
+        raise HTTPException(status_code=404, detail="Artist not found")
+    return artist
+
+
+@app.patch("/artist/{id}", response_model=ArtistID)
+def update_artist(id: int, artist: ArtistBase, session: SessionDep):
+    updated = updateArtist(id, artist, session)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Artist not found")
+    return updated
+
+
+@app.delete("/artist/{id}", response_model=ArtistID)
+def delete_artist(id: int, session: SessionDep):
+    deleted = deleteArtist(id, session)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Artist not found")
+    return deleted
 
 
 @app.get("/", response_class=HTMLResponse)
