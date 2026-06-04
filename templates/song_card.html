@@ -1,8 +1,13 @@
-<div class="card" style="width: 18rem;">
+<div class="card song-card" style="width: 18rem;">
   <img src="..." class="card-img-top" alt="...">
   <div class="card-body">
     <h5 class="card-title">Cancion: {{ song.title }}</h5>
-    <p class="card-text">Genero: {{ song.genre.value }}</p>
+    <p class="card-text">
+    Genero:
+    <span class="badge-{{ song.genre.value }}">
+        {{ song.genre.value }}
+    </span>
+</p>
     <p class="card-text">Duracion: {{ song.duration }}s</p>
     <a href="/" class="btn btn-primary">Go home</a>
   </div>
