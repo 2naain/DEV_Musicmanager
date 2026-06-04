@@ -46,7 +46,7 @@ def save_img_remote(file: UploadFile):
     response = supa_client.storage.from_(SUPABASE_BUCKET).upload(
         path=path,
         file=contents,
-        file_options={"contente-type": file.content_type},
+        file_options={"content-type": file.content_type},
     )
     stored_url_bucket = (supa_client.
                          storage.
