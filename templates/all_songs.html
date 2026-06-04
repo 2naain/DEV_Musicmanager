@@ -1,6 +1,10 @@
 {% extends "base.html" %}
+{% block title %}Canciones — MusicItself{% endblock %}
 {% block content %}
+<p class="page-title">Canciones</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
     {% for song in song_list %}
-    {% include 'song_card.html' %}
+        {% include 'song_card.html' %}
     {% endfor %}
+</div>
 {% endblock %}

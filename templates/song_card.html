@@ -1,22 +1,22 @@
-<div class="card song-card" style="width: 18rem;">
-    <img src="..." class="card-img-top" alt="...">
+<div class="song-card">
+    {% if song.image_url %}
+        <figure>
+            <img src="{{ song.image_url }}" class="song-card-img" alt="{{ song.title }}">
+            <figcaption style="display:none;">{{ song.title }}</figcaption>
+        </figure>
+    {% else %}
+        <div class="song-card-placeholder">🎵</div>
+    {% endif %}
 
-    <div class="card-body">
-        <h5 class="card-title">
-            Cancion: {{ song.title }}
-        </h5>
-
-        <p class="card-text">
-            Genero:
-            <span class="badge-genre badge-{{ song.genre.value }}">
-                {{ song.genre.value }}
-            </span>
-        </p>
-
-        <p class="card-text">
-            Duracion: {{ song.duration }}s
-        </p>
-
-        <a href="/" class="btn btn-primary">Go home</a>
+    <div class="song-card-body">
+        <div class="song-card-title">{{ song.title }}</div>
+        <div class="song-card-meta">
+            <span>{{ song.duration | duration }}</span>
+            <span>id: {{ song.id }}</span>
+        </div>
+        {% if song.genre %}
+            <span class="badge-genre badge-{{ song.genre.value }}">{{ song.genre.value }}</span>
+        {% endif %}
     </div>
+    <a href="/songs/{{ song.id }}" class="detail-btn">Ver detalle →</a>
 </div>
