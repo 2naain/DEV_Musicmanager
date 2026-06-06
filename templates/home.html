@@ -7,32 +7,99 @@
     <p style="color:#666; font-size:16px; margin-top:8px;">Tu biblioteca musical personal</p>
 </div>
 
+{% if search_results is not none %}
+<div style="margin-bottom:40px;">
+    <p style="color:#aaa; font-size:14px; margin-bottom:24px;">Resultados para <strong style="color:#fff;">"{{ q }}"</strong></p>
+
+    <!-- Canciones -->
+    <p style="color:#fff; font-weight:600; font-size:15px; margin-bottom:12px;">🎵 Canciones ({{ search_results.canciones|length }})</p>
+    {% if search_results.canciones %}
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap:16px; margin-bottom:32px;">
+        {% for song in search_results.canciones %}
+            {% include 'song_card.html' %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="color:#555; font-size:13px; margin-bottom:24px;">Sin resultados.</p>
+    {% endif %}
+
+    <!-- Artistas -->
+    <p style="color:#fff; font-weight:600; font-size:15px; margin-bottom:12px;">🎤 Artistas ({{ search_results.artistas|length }})</p>
+    {% if search_results.artistas %}
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap:16px; margin-bottom:32px;">
+        {% for artist in search_results.artistas %}
+        <a href="/artists/{{ artist.id }}" style="text-decoration:none;">
+            <div class="song-card">
+                {% if artist.image_url %}
+                <img src="{{ artist.image_url }}" class="song-card-img" alt="{{ artist.name }}">
+                {% else %}
+                <div class="song-card-placeholder">🎤</div>
+                {% endif %}
+                <div class="song-card-body">
+                    <div class="song-card-title">{{ artist.name }}</div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="color:#555; font-size:13px; margin-bottom:24px;">Sin resultados.</p>
+    {% endif %}
+
+    <!-- Playlists -->
+    <p style="color:#fff; font-weight:600; font-size:15px; margin-bottom:12px;">🎶 Playlists ({{ search_results.playlists|length }})</p>
+    {% if search_results.playlists %}
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:16px;">
+        {% for playlist in search_results.playlists %}
+        <div class="song-card">
+            {% if playlist.image_url %}
+            <img src="{{ playlist.image_url }}" class="song-card-img" alt="{{ playlist.name }}">
+            {% else %}
+            <div class="song-card-placeholder">🎶</div>
+            {% endif %}
+            <div class="song-card-body">
+                <div class="song-card-title">{{ playlist.name }}</div>
+                <div class="song-card-meta"><span>{{ playlist.description or "Sin descripción" }}</span></div>
+            </div>
+            <a href="/playlists/{{ playlist.id }}" class="detail-btn">Ver playlist →</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="color:#555; font-size:13px;">Sin resultados.</p>
+    {% endif %}
+</div>
+
+{% else %}
+
 <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:16px; margin-bottom:40px;">
     <div style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:12px; padding:24px; text-align:center;">
         <div style="font-size:2rem;">🎵</div>
-        <div style="font-size:2rem; font-weight:700; color:#00d4ff; margin:8px 0;">{{ songs|length }}</div>
+        <div style="font-size:2rem; font-weight:700; color:#4a8cbf; margin:8px 0; font-family:'Playfair Display',serif;">{{ songs|length }}</div>
         <div style="color:#666; font-size:13px;">Canciones</div>
         <a href="/songs" style="display:inline-block; margin-top:12px; font-size:12px; color:#555; text-decoration:none;">Ver todas →</a>
     </div>
     <div style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:12px; padding:24px; text-align:center;">
         <div style="font-size:2rem;">🎤</div>
-        <div style="font-size:2rem; font-weight:700; color:#00d4ff; margin:8px 0;">{{ artists|length }}</div>
+        <div style="font-size:2rem; font-weight:700; color:#4a8cbf; margin:8px 0; font-family:'Playfair Display',serif;">{{ artists|length }}</div>
         <div style="color:#666; font-size:13px;">Artistas</div>
         <a href="/artists" style="display:inline-block; margin-top:12px; font-size:12px; color:#555; text-decoration:none;">Ver todos →</a>
     </div>
     <div style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:12px; padding:24px; text-align:center;">
         <div style="font-size:2rem;">🎶</div>
-        <div style="font-size:2rem; font-weight:700; color:#00d4ff; margin:8px 0;">{{ playlists|length }}</div>
+        <div style="font-size:2rem; font-weight:700; color:#4a8cbf; margin:8px 0; font-family:'Playfair Display',serif;">{{ playlists|length }}</div>
         <div style="color:#666; font-size:13px;">Playlists</div>
         <a href="/playlists" style="display:inline-block; margin-top:12px; font-size:12px; color:#555; text-decoration:none;">Ver todas →</a>
     </div>
 </div>
 
-<p style="color:#fff; font-weight:600; font-size:16px; margin-bottom:16px;">Canciones recientes</p>
+<p style="color:#fff; font-weight:600; font-size:16px; margin-bottom:16px; font-family:'Playfair Display',serif;">Canciones recientes</p>
 <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap:16px;">
     {% for song in songs[-6:] %}
         {% include 'song_card.html' %}
     {% endfor %}
 </div>
+
+{% endif %}
 
 {% endblock %}

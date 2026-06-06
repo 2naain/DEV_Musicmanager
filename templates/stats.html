@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Estadísticas — MusicItself{% endblock %}
+{% block content %}
+
+<p class="page-title">Estadísticas</p>
+
+<!-- Resumen -->
+<div style="display:grid; grid-template-columns: repeat(3,1fr); gap:16px; margin-bottom:40px;">
+    <div style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:12px; padding:24px; text-align:center;">
+        <div style="font-size:2rem;">🎵</div>
+        <div style="font-size:2rem; font-weight:700; color:#4a8cbf; margin:8px 0; font-family:'Playfair Display',serif;">{{ total_songs }}</div>
+        <div style="color:#666; font-size:13px;">Canciones</div>
+    </div>
+    <div style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:12px; padding:24px; text-align:center;">
+        <div style="font-size:2rem;">🎤</div>
+        <div style="font-size:2rem; font-weight:700; color:#4a8cbf; margin:8px 0; font-family:'Playfair Display',serif;">{{ total_artists }}</div>
+        <div style="color:#666; font-size:13px;">Artistas</div>
+    </div>
+    <div style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:12px; padding:24px; text-align:center;">
+        <div style="font-size:2rem;">🎶</div>
+        <div style="font-size:2rem; font-weight:700; color:#4a8cbf; margin:8px 0; font-family:'Playfair Display',serif;">{{ total_playlists }}</div>
+        <div style="color:#666; font-size:13px;">Playlists</div>
+    </div>
+</div>
+
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
+    <!-- Gráfica de barras: canciones por artista -->
+    <div style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:12px; padding:24px;">
+        <p style="color:#fff; font-weight:600; font-size:15px; margin-bottom:16px; font-family:'Playfair Display',serif;">Canciones por artista</p>
+        <canvas id="barChart" height="220"></canvas>
+    </div>
+
+    <!-- Gráfica de dona: distribución por género -->
+    <div style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:12px; padding:24px;">
+        <p style="color:#fff; font-weight:600; font-size:15px; margin-bottom:16px; font-family:'Playfair Display',serif;">Distribución por género</p>
+        <canvas id="donutChart" height="220"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    Chart.defaults.color = '#888';
+    Chart.defaults.borderColor = '#2a2a2a';
+
+    // Datos desde Jinja
+    const topArtists = {{ top_artists | tojson }};
+    const genreCounts = {{ genre_counts | tojson }};
+
+    const paletteBar = [
+        '#2a6090','#3a7abf','#4a8cbf','#5a9ed0',
+        '#6ab0e0','#7ac2f0','#8ad4ff','#1a4a70'
+    ];
+    const paletteDona = [
+        '#2a6090','#e05b5b','#e0a85b','#a05be0',
+        '#5be0a8','#aaaaaa','#e07a5b','#888888'
+    ];
+
+    // Barras
+    new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: topArtists.map(a => a[0]),
+            datasets: [{
+                label: 'Canciones',
+                data: topArtists.map(a => a[1]),
+                backgroundColor: paletteBar,
+                borderRadius: 6,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { color: '#1e1e1e' }, ticks: { color: '#888', font: { size: 11 } } },
+                y: { grid: { color: '#1e1e1e' }, ticks: { color: '#888', stepSize: 1 }, beginAtZero: true }
+            }
+        }
+    });
+
+    // Dona
+    const genreLabels = Object.keys(genreCounts);
+    const genreValues = Object.values(genreCounts);
+    new Chart(document.getElementById('donutChart'), {
+        type: 'doughnut',
+        data: {
+            labels: genreLabels,
+            datasets: [{
+                data: genreValues,
+                backgroundColor: paletteDona,
+                borderColor: '#0a0a0a',
+                borderWidth: 3,
+                hoverOffset: 8,
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#888', font: { size: 11 }, padding: 12 }
+                }
+            },
+            cutout: '62%',
+        }
+    });
+</script>
+{% endblock %}

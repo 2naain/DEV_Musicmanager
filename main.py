@@ -229,16 +229,65 @@ def get_playlist_songs_api(id: int, session: SessionDep):
 # ==========================
 
 @app.get("/", response_class=HTMLResponse, tags=["Frontend"])
-async def home(request: Request, session: Session = Depends(get_session)):
+async def home(request: Request, q: Optional[str] = None, session: Session = Depends(get_session)):
     songs = await show_all_songs_db(session)
     artists = findAllArtists(session)
     playlists = get_all_playlists(session)
+
+    # Build artist lookup for song cards
+    artist_map = {a.id: a.name for a in artists}
+
+    search_results = None
+    if q:
+        q_clean = q.strip().lower()
+        search_results = {
+            "canciones": [s for s in songs if q_clean in (s.title or "").lower()],
+            "artistas": [a for a in artists if q_clean in (a.name or "").lower()],
+            "playlists": [p for p in playlists if q_clean in (p.name or "").lower()],
+        }
+
     return templates.TemplateResponse(request, "home.html", {
-        "search_action": "/songs",
-        "search_placeholder": "Buscar canción...",
+        "search_action": "/",
+        "search_placeholder": "Buscar...",
         "songs": songs,
         "artists": artists,
-        "playlists": playlists
+        "playlists": playlists,
+        "artist_map": artist_map,
+        "q": q,
+        "search_results": search_results,
+    })
+
+
+# ==========================
+# FRONTEND - STATS
+# ==========================
+
+@app.get("/stats", response_class=HTMLResponse, tags=["Frontend"])
+async def stats_html(request: Request, session: Session = Depends(get_session)):
+    songs = await show_all_songs_db(session)
+    artists = findAllArtists(session)
+    playlists = get_all_playlists(session)
+
+    # Songs per genre
+    genre_counts = {}
+    for s in songs:
+        g = s.genre.value if s.genre else "Sin género"
+        genre_counts[g] = genre_counts.get(g, 0) + 1
+
+    # Songs per artist (top 8)
+    artist_map = {a.id: a.name for a in artists}
+    artist_counts = {}
+    for s in songs:
+        name = artist_map.get(s.artist_id, "Desconocido")
+        artist_counts[name] = artist_counts.get(name, 0) + 1
+    top_artists = sorted(artist_counts.items(), key=lambda x: -x[1])[:8]
+
+    return templates.TemplateResponse(request, "stats.html", {
+        "total_songs": len(songs),
+        "total_artists": len(artists),
+        "total_playlists": len(playlists),
+        "genre_counts": genre_counts,
+        "top_artists": top_artists,
     })
 
 
@@ -254,8 +303,11 @@ async def show_all_songs_html(
 ):
     q = q.strip() if q else None
     songs = await show_all_songs_db(session, q=q)
+    artists = findAllArtists(session)
+    artist_map = {a.id: a.name for a in artists}
     return templates.TemplateResponse(request, "all_songs.html", {
         "song_list": songs,
+        "artist_map": artist_map,
         "q": q,
         "search_action": "/songs",
         "search_placeholder": "Buscar canción...",
@@ -346,6 +398,7 @@ def create_artist_html(request: Request):
 async def artist_created(
     request: Request,
     name: str = Form(...),
+    descripcion: Optional[str] = Form(None),
     image: UploadFile = File(None),
     session: Session = Depends(get_session)
 ):
@@ -357,7 +410,7 @@ async def artist_created(
     image_url = None
     if image and image.filename:
         image_url = save_img_remote(image)
-    new_artist = ArtistBase(name=name.strip(), image_url=image_url)
+    new_artist = ArtistBase(name=name.strip(), image_url=image_url, descripcion=descripcion)
     createArtist(new_artist, session)
     return RedirectResponse("/artists", status_code=302)
 
@@ -399,10 +452,11 @@ def create_playlist_html(request: Request):
 
 
 @app.post("/playlists/create", response_class=HTMLResponse, tags=["Frontend"])
-def playlist_created(
+async def playlist_created(
     request: Request,
     name: str = Form(...),
     description: Optional[str] = Form(None),
+    image: UploadFile = File(None),
     session: Session = Depends(get_session)
 ):
     if len(name.strip()) < 2:
@@ -410,10 +464,12 @@ def playlist_created(
             "error": "El nombre debe tener al menos 2 caracteres",
             "create_url": "/playlists/create"
         })
-    new_playlist = PlaylistBase(name=name.strip(), description=description)
+    image_url = None
+    if image and image.filename:
+        image_url = save_img_remote(image)
+    new_playlist = PlaylistBase(name=name.strip(), description=description, image_url=image_url)
     create_playlist_db(new_playlist, session)
     return RedirectResponse("/playlists", status_code=302)
-
 
 
 @app.get("/playlists/{id}", response_class=HTMLResponse, tags=["Frontend"])

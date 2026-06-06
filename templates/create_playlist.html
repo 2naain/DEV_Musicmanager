@@ -4,7 +4,12 @@
 <p class="page-title">Crear Playlist</p>
 
 <div class="form-card">
-    <form method="post" action="{{ create_url }}">
+    {% if error %}
+    <div style="background:#3a1a1a; border:1px solid #7a2a2a; color:#e05b5b; border-radius:8px; padding:12px; margin-bottom:16px; font-size:13px;">
+        {{ error }}
+    </div>
+    {% endif %}
+    <form method="post" action="{{ create_url }}" enctype="multipart/form-data">
 
         <div class="mb-3">
             <label class="form-label" for="name">Nombre *</label>
@@ -12,15 +17,20 @@
                    placeholder="Nombre de la playlist" required minlength="2" maxlength="100">
         </div>
 
-        <div class="mb-4">
+        <div class="mb-3">
             <label class="form-label" for="description">Descripción (opcional)</label>
             <textarea class="form-control" id="description" name="description"
                       rows="3" maxlength="500"
                       placeholder="Describe tu playlist..."></textarea>
         </div>
 
+        <div class="mb-4">
+            <label class="form-label" for="image">Portada (opcional)</label>
+            <input class="form-control" type="file" id="image" name="image" accept="image/*">
+        </div>
+
         <button type="submit" class="btn btn-primary w-100">Crear playlist</button>
     </form>
-    <a href="/playlists" style="display:inline-block; margin-top:16px; color:#666; text-decoration:none; font-size:13px;">← Volver</a>
+    <a href="/playlists" class="btn-back">← Volver</a>
 </div>
 {% endblock %}

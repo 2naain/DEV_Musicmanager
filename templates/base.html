@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <title>{% block title %}MusicItself{% endblock %}</title>
     <style>
         * { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .brand-title, .page-title { font-family: 'Playfair Display', serif; }
 
         body {
             background: #0a0a0a;
@@ -20,8 +21,8 @@
 
         /* ── HEADER ── */
         header {
-            background: linear-gradient(135deg, #1a0a2e 0%, #2d0a4e 100%);
-            border-bottom: 1px solid #4a0a7e;
+            background: linear-gradient(135deg, #1a3a5c 0%, #2a5080 100%);
+            border-bottom: 1px solid #3a6a9a;
             padding: 8px 0;
         }
 
@@ -32,7 +33,7 @@
         }
 
         header nav a {
-            color: #aaa;
+            color: #c8dff0;
             text-decoration: none;
             font-size: 14px;
             padding: 6px 14px;
@@ -42,17 +43,18 @@
 
         header nav a:hover {
             color: #fff;
-            background: #1e1e1e;
+            background: rgba(255,255,255,0.12);
         }
 
         header nav a.active {
-            color: #00d4ff;
+            color: #fff;
+            background: rgba(255,255,255,0.15);
         }
 
         .search-input {
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            color: #e0e0e0;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
             border-radius: 8px;
             padding: 6px 14px;
             font-size: 13px;
@@ -61,11 +63,12 @@
 
         .search-input:focus {
             outline: none;
-            border-color: #00d4ff;
+            border-color: rgba(255,255,255,0.5);
             color: #fff;
+            background: rgba(255,255,255,0.15);
         }
 
-        .search-input::placeholder { color: #555; }
+        .search-input::placeholder { color: rgba(255,255,255,0.5); }
 
         /* ── MAIN ── */
         main {
@@ -84,7 +87,7 @@
 
         .song-card:hover {
             transform: translateY(-4px);
-            border-color: #00d4ff33;
+            border-color: #3a6a9a33;
         }
 
         .song-card-img {
@@ -114,6 +117,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-family: 'Playfair Display', serif;
         }
 
         .song-card-meta {
@@ -153,7 +157,7 @@
             transition: color 0.2s, background 0.2s;
         }
 
-        .detail-btn:hover { color: #00d4ff; background: #111; }
+        .detail-btn:hover { color: #4a8cbf; background: #111; }
 
         /* ── FORMULARIOS ── */
         .form-card {
@@ -173,7 +177,7 @@
 
         .form-control:focus, .form-select:focus {
             background: #111;
-            border-color: #00d4ff;
+            border-color: #4a8cbf;
             color: #fff;
             box-shadow: none;
         }
@@ -182,23 +186,34 @@
         .form-label { color: #aaa; font-size: 13px; margin-bottom: 4px; }
 
         .btn-primary {
-            background: #00d4ff;
-            border-color: #00d4ff;
-            color: #000;
+            background: #2a6090;
+            border-color: #2a6090;
+            color: #fff;
             font-weight: 600;
         }
 
         .btn-primary:hover {
-            background: #00b8d9;
-            border-color: #00b8d9;
-            color: #000;
+            background: #1e4f78;
+            border-color: #1e4f78;
+            color: #fff;
         }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #666;
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+        .btn-back:hover { color: #4a8cbf; }
 
         .page-title {
             font-size: 22px;
             font-weight: 600;
             color: #fff;
             margin-bottom: 24px;
+            font-family: 'Playfair Display', serif;
         }
 
         /* ── FOOTER ── */
@@ -212,7 +227,7 @@
         }
 
         footer a { color: #666; text-decoration: none; }
-        footer a:hover { color: #00d4ff; }
+        footer a:hover { color: #4a8cbf; }
     </style>
 </head>
 <body>
@@ -231,13 +246,13 @@
             <a href="/songs">Canciones</a>
             <a href="/artists">Artistas</a>
             <a href="/playlists">Playlists</a>
-
+            <a href="/stats">Estadísticas</a>
         </nav>
 
-        <form action="{{ search_action | default('/songs') }}" method="get" class="d-flex align-items-center gap-2">
+        <form action="{{ search_action | default('/') }}" method="get" class="d-flex align-items-center gap-2">
             <input class="search-input" type="search" name="q"
                    value="{{ q if q else '' }}"
-                   placeholder="🔍 {{ search_placeholder | default('Buscar canción...') }}">
+                   placeholder="🔍 {{ search_placeholder | default('Buscar...') }}">
         </form>
     </div>
 </header>

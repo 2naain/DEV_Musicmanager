@@ -8,14 +8,18 @@
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;">
     {% for playlist in playlist_list %}
     <div class="song-card">
+        {% if playlist.image_url %}
+        <img src="{{ playlist.image_url }}" class="song-card-img" alt="{{ playlist.name }}">
+        {% else %}
         <div class="song-card-placeholder">🎶</div>
+        {% endif %}
         <div class="song-card-body">
             <div class="song-card-title">{{ playlist.name }}</div>
             <div class="song-card-meta">
                 <span>{{ playlist.description or "Sin descripción" }}</span>
             </div>
         </div>
-        <a href="/playlists/{{ playlist.id }}" class="detail-btn">Ver detalle →</a>
+        <a href="/playlists/{{ playlist.id }}" class="detail-btn">Ver playlist →</a>
     </div>
     {% endfor %}
     {% if not playlist_list %}

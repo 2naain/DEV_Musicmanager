@@ -12,11 +12,12 @@
         <div class="song-card-title">{{ song.title }}</div>
         <div class="song-card-meta">
             <span>{{ song.duration | duration }}</span>
-            <span>id: {{ song.id }}</span>
+            {% if artist_map is defined and song.artist_id %}
+                <span style="color:#888;">{{ artist_map.get(song.artist_id, '') }}</span>
+            {% endif %}
         </div>
         {% if song.genre %}
             <span class="badge-genre badge-{{ song.genre.value }}">{{ song.genre.value }}</span>
         {% endif %}
     </div>
-
 </div>
