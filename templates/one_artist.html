@@ -1,19 +1,74 @@
 {% extends "base.html" %}
 {% block title %}{{ artist.name }} — MusicItself{% endblock %}
 {% block content %}
-<div style="max-width: 640px;">
-    {% if artist.image_url %}
-    <img src="{{ artist.image_url }}" style="width:100%; max-height:480px; object-fit:contain; background:#0a0a0a; border-radius:16px; margin-bottom:20px;">
-    {% else %}
-    <div style="width:100%; height:480px; background:#1a1a1a; border-radius:16px; margin-bottom:20px; display:flex; align-items:center; justify-content:center; font-size:6rem;">🎤</div>
-    {% endif %}
 
-    <h2 style="color:#fff; font-weight:700; font-size:1.8rem; margin-bottom:16px;">{{ artist.name }}</h2>
+<div style="
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 24px;
+">
+    <!-- Imagen con título superpuesto -->
+    <div style="position: relative; flex-shrink: 0; width: 360px;">
+        {% if artist.image_url %}
+        <img src="{{ artist.image_url }}"
+             alt="{{ artist.name }}"
+             style="width: 100%; border-radius: 8px; display: block;">
+        {% else %}
+        <div style="
+            width: 360px;
+            height: 460px;
+            background: #1a1a2e;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+        ">🎤</div>
+        {% endif %}
 
-    {% if artist.descripcion %}
-    <p style="color:#aaa; font-size:14px; line-height:1.7; margin-bottom:24px;">{{ artist.descripcion }}</p>
-    {% endif %}
+        <!-- Título sobre la imagen -->
+        <div style="
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px 20px 18px;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 60%, transparent);
+            border-radius: 0 0 8px 8px;
+        ">
+            <h1 style="
+                margin: 0;
+                color: #ffffff;
+                font-size: 2rem;
+                font-weight: 800;
+                text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+            ">{{ artist.name }}</h1>
+        </div>
+    </div>
 
-    <a href="/artists" class="btn-back">← Volver a Artistas</a>
+    <!-- Descripción a la derecha -->
+    <div style="flex: 1; padding-top: 12px;">
+        {% if artist.description %}
+        <p style="
+            font-size: 1.15rem;
+            line-height: 1.8;
+            text-align: justify;
+            color: #dddddd;
+            margin: 0 0 24px 0;
+        ">{{ artist.description }}</p>
+        {% endif %}
+
+        <a href="/artists" style="
+            display: inline-block;
+            margin-top: 16px;
+            color: #aaaaaa;
+            text-decoration: none;
+            font-size: 0.95rem;
+        ">← Volver a Artistas</a>
+    </div>
 </div>
+
 {% endblock %}
