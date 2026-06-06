@@ -2,17 +2,15 @@
 {% block title %}{{ artist.name }} — MusicItself{% endblock %}
 {% block content %}
 <div style="max-width: 640px;">
-    <!-- Imagen grande fuera de la card -->
     {% if artist.image_url %}
     <img src="{{ artist.image_url }}" style="width:100%; max-height:480px; object-fit:cover; object-position:top; border-radius:16px; margin-bottom:20px;">
     {% else %}
     <div style="width:100%; height:480px; background:#1a1a1a; border-radius:16px; margin-bottom:20px; display:flex; align-items:center; justify-content:center; font-size:6rem;">🎤</div>
+    {% endif %}
 
-    <!-- Nombre debajo de la imagen -->
     <h2 style="color:#fff; font-weight:700; font-size:1.8rem; margin-bottom:16px;">{{ artist.name }}</h2>
 
     {% if artist.descripcion %}
-    <!-- Descripción al lado (si hay imagen, layout de dos columnas; si no, full width) -->
     <p style="color:#aaa; font-size:14px; line-height:1.7; margin-bottom:24px;">{{ artist.descripcion }}</p>
     {% endif %}
 
