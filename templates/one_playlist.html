@@ -24,7 +24,7 @@
     <div id="add-panel" class="d-none" style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:10px; padding:16px; margin-bottom:20px;">
         <form action="/playlists/{{ playlist.id }}/add" method="post">
             <label class="form-label" style="font-size:13px;">Selecciona una canción</label>
-            <select name="song_id" class="form-control" required>
+            <select name="song_id" class="form-control" required size="1" style="height:38px;">
                 <option value="">— Elige una canción —</option>
                 {% for song in all_songs %}
                 <option value="{{ song.id }}">{{ song.title }} — {{ song.genre or "Sin género" }}</option>
