@@ -234,10 +234,9 @@ async def home(request: Request, q: Optional[str] = None, session: Session = Dep
     artists = findAllArtists(session)
     playlists = get_all_playlists(session)
 
-    # Build artist lookup for song cards
     artist_map = {a.id: a.name for a in artists}
 
-    ssearch_results = None
+    search_results = None
     if q:
         q_clean = q.strip().lower()
         search_results = {
