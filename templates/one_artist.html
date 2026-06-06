@@ -39,14 +39,14 @@
 
     <!-- Columna derecha: descripción + volver -->
     <div style="flex: 1; padding-top: 56px; display: flex; flex-direction: column; gap: 20px;">
-        {% if artist.description %}
+        {% if artist.descripcion %}
         <p style="
             font-size: 1.15rem;
             line-height: 1.8;
             text-align: justify;
             color: #dddddd;
             margin: 0;
-        ">{{ artist.description }}</p>
+        ">{{ artist.descripcion }}</p>
         {% endif %}
 
         <a href="/artists" style="
