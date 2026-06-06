@@ -237,12 +237,13 @@ async def home(request: Request, q: Optional[str] = None, session: Session = Dep
     # Build artist lookup for song cards
     artist_map = {a.id: a.name for a in artists}
 
-    search_results = None
+    ssearch_results = None
     if q:
         q_clean = q.strip().lower()
         search_results = {
             "canciones": [s for s in songs if q_clean in (s.title or "").lower()
                           or q_clean in artist_map.get(s.artist_id, "").lower()],
+            "artistas": [a for a in artists if q_clean in (a.name or "").lower()],
         }
 
     return templates.TemplateResponse(request, "home.html", {
