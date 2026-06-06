@@ -4,7 +4,7 @@
 > Backend con FastAPI · Base de datos PostgreSQL · Imágenes en Supabase · Interfaz con Jinja2
 
 **Autor:** Juan Diego Lozano  
-**Repositorio:** [github.com/2naain/DEV_Musicmanager](https://github.com/2naain/DEV_Musicmanager)  
+**Repositorio:** [github.com/2naain/DEV_Musicmanager](https://github.com/2naain/DEV_MusicItself)  
 **Despliegue:** [musiicitself.onrender.com](https://musiicitself.onrender.com)  
 **Institución:** Universidad Católica de Colombia — 2026
 
