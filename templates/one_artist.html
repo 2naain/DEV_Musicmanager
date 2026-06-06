@@ -49,21 +49,20 @@
         </div>
     </div>
 
-    <!-- Descripción a la derecha -->
-    <div style="flex: 1; padding-top: 12px;">
+    <!-- Lado derecho: descripción + volver -->
+    <div style="flex: 1; padding-top: 12px; display: flex; flex-direction: column; gap: 16px;">
         {% if artist.description %}
         <p style="
             font-size: 1.15rem;
             line-height: 1.8;
             text-align: justify;
             color: #dddddd;
-            margin: 0 0 24px 0;
+            margin: 0;
         ">{{ artist.description }}</p>
         {% endif %}
 
         <a href="/artists" style="
             display: inline-block;
-            margin-top: 16px;
             color: #aaaaaa;
             text-decoration: none;
             font-size: 0.95rem;
